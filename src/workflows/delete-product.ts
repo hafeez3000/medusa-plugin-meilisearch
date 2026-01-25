@@ -5,10 +5,8 @@ type WorkflowInput = {
   id: string
 }
 
-const productDeletedWorkflow = createWorkflow('product-deleted', ({ id }: WorkflowInput) => {
-  deleteProductStep({ id })
+export const deleteProductWorkflow = createWorkflow('meilisearch-delete-product', ({ id }: WorkflowInput) => {
+  deleteProductStep({ productId: id })
 
   return new WorkflowResponse({})
 })
-
-export default productDeletedWorkflow

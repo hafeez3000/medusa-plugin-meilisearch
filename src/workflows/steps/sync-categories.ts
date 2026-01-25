@@ -1,5 +1,6 @@
 import { createStep, StepResponse } from '@medusajs/workflows-sdk'
 import { ProductCategoryDTO, RemoteQueryFilters } from '@medusajs/types'
+import { ContainerRegistrationKeys } from '@medusajs/utils'
 import { MEILISEARCH_MODULE, MeiliSearchService } from '../../modules/meilisearch'
 
 export type StepInput = {
@@ -10,7 +11,7 @@ export type StepInput = {
 export const syncCategoriesStep = createStep(
   'sync-categories',
   async ({ filters, batchSize = 1000 }: StepInput, { container }) => {
-    const queryService = container.resolve('query')
+    const queryService = container.resolve(ContainerRegistrationKeys.QUERY)
     const meilisearchService: MeiliSearchService = container.resolve(MEILISEARCH_MODULE)
 
     const categoryFields = await meilisearchService.getFieldsForType('categories')

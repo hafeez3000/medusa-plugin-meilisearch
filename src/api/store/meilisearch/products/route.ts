@@ -1,6 +1,6 @@
 import z from 'zod'
 import { MedusaRequest, MedusaResponse, prepareListQuery } from '@medusajs/framework'
-import { QueryContext } from '@medusajs/utils'
+import { ContainerRegistrationKeys, QueryContext } from '@medusajs/utils'
 import { RemoteQueryFilters, QueryContextType, ProductDTO } from '@medusajs/types'
 import { MEILISEARCH_MODULE, MeiliSearchService } from '../../../../modules/meilisearch'
 
@@ -39,7 +39,7 @@ export async function GET(req: MedusaRequest<any, StoreProductsParams>, res: Med
     ...standardQuery
   } = req.validatedQuery
 
-  const queryService = req.scope.resolve('query')
+  const queryService = req.scope.resolve(ContainerRegistrationKeys.QUERY)
   const meilisearchService: MeiliSearchService = req.scope.resolve(MEILISEARCH_MODULE)
 
   // Use prepareListQuery to handle field selectors and other standard parameters

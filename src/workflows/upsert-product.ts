@@ -5,12 +5,9 @@ type WorkflowInput = {
   id: string
 }
 
-const productCreatedWorkflow = createWorkflow('product-created', ({ id }: WorkflowInput) => {
-  const { products } = upsertProductStep({ id })
-
+export const upsertProductWorkflow = createWorkflow('meilisearch-upsert-product', ({ id }: WorkflowInput) => {
+  const { products } = upsertProductStep({ productId: id })
   return new WorkflowResponse({
     products,
   })
 })
-
-export default productCreatedWorkflow

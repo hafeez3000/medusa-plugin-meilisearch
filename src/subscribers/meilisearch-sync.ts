@@ -7,21 +7,24 @@ export default async function meilisearchSyncHandler({ container }: SubscriberAr
 
   logger.info('Starting MeiliSearch indexing...')
 
-  const {
-    result: { totalProcessed: categoriesProcessed, totalDeleted: categoriesDeleted },
-  } = await syncCategoriesWorkflow(container).run({
-    input: {},
-  })
+  try {
+    const {
+      result: { totalProcessed: categoriesProcessed, totalDeleted: categoriesDeleted },
+    } = await syncCategoriesWorkflow(container).run({
+      input: {},
+    })
+    logger.info(`Successfully indexed ${categoriesProcessed} categories and deleted ${categoriesDeleted} categories`)
 
-  logger.info(`Successfully indexed ${categoriesProcessed} categories and deleted ${categoriesDeleted} categories`)
-
-  const {
-    result: { totalProcessed: productsProcessed, totalDeleted: productsDeleted },
-  } = await syncProductsWorkflow(container).run({
-    input: {},
-  })
-
-  logger.info(`Successfully indexed ${productsProcessed} products and deleted ${productsDeleted} products`)
+    const {
+      result: { totalProcessed: productsProcessed, totalDeleted: productsDeleted },
+    } = await syncProductsWorkflow(container).run({
+      input: {},
+    })
+    logger.info(`Successfully indexed ${productsProcessed} products and deleted ${productsDeleted} products`)
+  } catch (error) {
+    logger.error(error)
+    throw error
+  }
 }
 
 export const config: SubscriberConfig = {

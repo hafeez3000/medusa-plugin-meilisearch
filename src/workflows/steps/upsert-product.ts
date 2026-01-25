@@ -1,13 +1,13 @@
 import { createStep, StepResponse } from '@medusajs/workflows-sdk'
-import { SearchUtils } from '@medusajs/utils'
+import { ContainerRegistrationKeys, SearchUtils } from '@medusajs/utils'
 import { MEILISEARCH_MODULE, MeiliSearchService } from '../../modules/meilisearch'
 
 type StepInput = {
-  id: string
+  productId: string
 }
 
-export const upsertProductStep = createStep('upsert-products', async ({ id }: StepInput, { container }) => {
-  const queryService = container.resolve('query')
+export const upsertProductStep = createStep('upsert-products', async ({ productId }: StepInput, { container }) => {
+  const queryService = container.resolve(ContainerRegistrationKeys.QUERY)
   const meilisearchService: MeiliSearchService = container.resolve(MEILISEARCH_MODULE)
 
   const productFields = await meilisearchService.getFieldsForType(SearchUtils.indexTypes.PRODUCTS)
@@ -16,7 +16,7 @@ export const upsertProductStep = createStep('upsert-products', async ({ id }: St
   const { data: products } = await queryService.graph({
     entity: 'product',
     fields: productFields,
-    filters: { id },
+    filters: { id: productId },
   })
 
   await Promise.all(

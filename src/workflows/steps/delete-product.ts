@@ -3,14 +3,16 @@ import { SearchUtils } from '@medusajs/utils'
 import { MEILISEARCH_MODULE, MeiliSearchService } from '../../modules/meilisearch'
 
 type StepInput = {
-  id: string
+  productId: string
 }
 
-export const deleteProductStep = createStep('delete-product', async ({ id }: StepInput, { container }) => {
+export const deleteProductStep = createStep('delete-product', async ({ productId }: StepInput, { container }) => {
   const meilisearchService: MeiliSearchService = container.resolve(MEILISEARCH_MODULE)
   const productIndexes = await meilisearchService.getIndexesByType(SearchUtils.indexTypes.PRODUCTS)
 
-  await Promise.all(productIndexes.map((indexKey) => meilisearchService.deleteDocument(indexKey, id)))
+  await Promise.all(productIndexes.map((indexKey) => meilisearchService.deleteDocument(indexKey, productId)))
 
-  return new StepResponse()
+  return new StepResponse({
+    productId,
+  })
 })
