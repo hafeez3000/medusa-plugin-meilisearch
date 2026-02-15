@@ -698,15 +698,23 @@ new file mode 100644
 +++ b/src/lib/search-client.ts	(date 1738513866275)
 @@ -0,0 +1,15 @@
 +import { instantMeiliSearch } from "@meilisearch/instant-meilisearch"
-+import { SearchClient } from "instantsearch.js";
++import { SearchClient } from "instantsearch.js"
 +
-+const endpoint =
++// Client-side: browser connects through Traefik
++const clientEndpoint =
 +  process.env.NEXT_PUBLIC_SEARCH_ENDPOINT || "http://127.0.0.1:7700"
++
++// Server-side: runs inside Docker, use internal network
++const serverEndpoint =
++  process.env.NEXT_INTERNAL_SEARCH_ENDPOINT || "http://meilisearch:7700"
 +
 +const apiKey = process.env.NEXT_PUBLIC_SEARCH_API_KEY || "test_key"
 +
++// Use server endpoint for server-side rendering
++const endpoint = typeof window === "undefined" ? serverEndpoint : clientEndpoint
++
 +const ms = instantMeiliSearch(endpoint, apiKey)
-+export const searchClient = (ms.searchClient as unknown) as SearchClient
++export const searchClient = ms.searchClient as unknown as SearchClient
 +
 +export const SEARCH_INDEX_NAME =
 +  process.env.NEXT_PUBLIC_INDEX_NAME || "products"
